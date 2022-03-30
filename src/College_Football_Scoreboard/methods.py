@@ -6,7 +6,11 @@ def get_games_on_date(date):
     if type(date) is not datetime.date:
         raise Exception("Data provided must be datetime.date")
     season_divisions = get_season_divisions_number(date)
+    game_date_url = date.month+"%2F"+date.day+"%2F"+date.year
 
+    url = "https://stats.ncaa.org/season_divisions/"+season_divisions+"/scoreboards?utf8=✓&season_division_id=&game_date="+game_date_url
+    r = requests.get(url)
+    soup = BeautifulSoup(r.content, features="html.parser")
 
 def get_season_divisions_number(date):
     if datetime.date(2021, 7, 15) < date < datetime.date(2022, 7, 15):
