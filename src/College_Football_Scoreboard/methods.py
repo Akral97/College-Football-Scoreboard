@@ -2,15 +2,24 @@ import datetime
 from bs4 import BeautifulSoup
 import requests
 
+
 def get_games_on_date(date):
     if type(date) is not datetime.date:
         raise Exception("Data provided must be datetime.date")
+    result = []
     season_divisions = get_season_divisions_number(date)
-    game_date_url = date.month+"%2F"+date.day+"%2F"+date.year
-
+    game_date_url = date_number_add_leading_zero_to_string(date.month)+"%2F"+date_number_add_leading_zero_to_string(date.day)+"%2F"+str(date.year)
+    hdr = {'User-Agent': 'Mozilla/5.0'}
     url = "https://stats.ncaa.org/season_divisions/"+season_divisions+"/scoreboards?utf8=✓&season_division_id=&game_date="+game_date_url
-    r = requests.get(url)
+    r = requests.get(url, headers=hdr)
     soup = BeautifulSoup(r.content, features="html.parser")
+    games_tbody = soup.find("table").find("tbody")
+    games_tr = games_tbody.find_all("tr")
+    # for tr_g in games_tr:
+
+    print(games_tr)
+
+    return result
 
 def get_season_divisions_number(date):
     if datetime.date(2021, 7, 15) < date < datetime.date(2022, 7, 15):
@@ -43,3 +52,9 @@ def get_season_divisions_number(date):
         return "15968"
 
     raise Exception("Year is not supported")
+
+def date_number_add_leading_zero_to_string(num):
+    if num < 10:
+        return "0"+str(num)
+    else:
+        return str(num)
