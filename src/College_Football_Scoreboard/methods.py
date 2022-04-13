@@ -15,9 +15,11 @@ def get_games_on_date(date):
     soup = BeautifulSoup(r.content, features="html.parser")
     games_tbody = soup.find("table").find("tbody")
     games_tr = games_tbody.find_all("tr")
-    # for tr_g in games_tr:
 
-    print(games_tr)
+    for tr_g in games_tr:
+        clean_game_tr(tr_g)
+
+    #print(games_tr)
 
     return result
 
@@ -58,3 +60,8 @@ def date_number_add_leading_zero_to_string(num):
         return "0"+str(num)
     else:
         return str(num)
+
+def clean_game_tr(tr_g):
+    #print(tr_g)
+    teams = tr_g.find_all("a", {"target": "TEAMS_WIN"})
+    print(teams)
